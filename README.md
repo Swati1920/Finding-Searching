@@ -1,253 +1,270 @@
-# Missing Person Identification System
+# Missing Person Identification and Search System
 
-![Issues](https://img.shields.io/github/issues/gaganmanku96/Finding-missing-person-using-AI) ![Stars](https://img.shields.io/github/stars/gaganmanku96/Finding-missing-person-using-AI?style=social)
-![CodeRabbit Reviews](https://img.shields.io/coderabbit/prs/github/gaganmanku96/Finding-missing-person-using-AI?utm_source=oss&utm_medium=github&utm_campaign=gaganmanku96%2FFinding-missing-person-using-AI&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
+## Overview
 
-![Streamlit](https://img.shields.io/badge/Streamlit-000000?style=for-the-badge&logo=streamlit&logoColor=white)
-![MediaPipe](https://img.shields.io/badge/MediaPipe-000000?style=for-the-badge&logo=mediapipe&logoColor=white)
-![Python](https://img.shields.io/badge/Python-000000?style=for-the-badge&logo=python&logoColor=white)
-![SQLite](https://img.shields.io/badge/SQLite-000000?style=for-the-badge&logo=sqlite&logoColor=white)
+The **Missing Person Identification and Search System** is an AI-assisted application developed to help manage missing-person cases and identify possible matches from submitted images or sightings.
 
-> [![LinkedIn](https://i.stack.imgur.com/gVE0j.png) Endorse on LinkedIn](https://www.linkedin.com/in/gaganmanku96/) if this project was helpful.
+The system uses facial landmark detection and machine learning techniques to compare facial features from registered cases with those obtained from public submissions. It provides separate interfaces for authorized users and the general public, making it easier to register cases, submit sightings, manage records, and review potential matches.
 
 ---
 
-> **Disclaimer**
->
-> All images of individuals appearing in the screenshots and used as sample data in this project were sourced from the internet solely for the purpose of demonstrating the facial recognition pipeline in a non-commercial, educational context. These images are the property of their respective owners. No claim of ownership is made. If you are the rights holder of any image and wish it to be removed, please open an issue and it will be taken down promptly.
->
-> This project does not store, distribute, or commercialise any personal images. The face data derived from sample images (landmark vectors) is used only locally for matching demonstration and is not shared with any third party.
+## Key Objectives
+
+* Digitize the process of registering and managing missing-person cases.
+* Reduce the need for manual comparison of photographs.
+* Extract facial features from uploaded images using AI-based face detection.
+* Compare registered cases with publicly submitted sightings.
+* Provide a centralized dashboard for monitoring case information.
+* Allow authorized users to manage cases based on their assigned roles.
+* Store and organize case-related information in a structured database.
 
 ---
 
-## Table of Contents
+## How the System Works
 
-- [The Problem](#the-problem)
-- [A Case, Start to Finish](#a-case-start-to-finish)
-- [How It Works](#how-it-works)
-- [Features](#features)
-- [Getting Started](#getting-started)
-- [Configuring Login Credentials](#configuring-login-credentials)
-- [Seeding Demo Data](#seeding-demo-data)
-- [Tech Stack](#tech-stack)
-- [FAQ](#faq)
+### 1. Registering a Missing Person
 
----
+An authorized user can register a new missing-person case by entering the required details and uploading an image.
 
-## The Problem
+The system processes the uploaded image and detects facial landmarks. The extracted facial information is converted into numerical data that can later be used for comparison with other records.
 
-Hundreds of people — mostly children — go missing every day in India. When a sighting is reported, officers have to manually compare photos, sift through paperwork, and coordinate across stations. By the time a match is confirmed, the trail has often gone cold.
+### 2. Managing Cases
 
----
+Registered cases are available through the main application dashboard.
 
-## A Case, Start to Finish
+Depending on the assigned role, users can perform actions such as:
 
-**Step 1 — Family files a report. Officer registers the case.**
+* Registering new cases
+* Viewing case records
+* Managing existing cases
+* Monitoring case status
+* Initiating the face-matching process
 
-A family in Haridwar reports their child missing. An officer opens the portal, uploads a photo, and the AI immediately detects the face and extracts a 468-point mesh — no manual tagging needed.
+### 3. Public Sighting Submission
 
-<img src="./assets/screenshots/register_new_case.png" alt="Register New Case — face detected with bounding box" width="700"/>
+A separate public interface allows users to submit information about a possible sighting.
 
----
+The user can provide relevant details and upload an image or video. The system processes the submitted visual data and extracts facial information when a detectable face is available.
 
-**Step 2 — The dashboard tracks every open case.**
+### 4. AI-Based Face Matching
 
-The officer's home screen shows live counts of found and not-found cases, and a map that plots where cases are concentrated across India.
+The system compares facial landmark data from registered missing-person cases with the facial data obtained from public submissions.
 
-<img src="./assets/screenshots/homepage.png" alt="Officer dashboard with case counts and India map" width="700"/>
+A K-Nearest Neighbors (KNN) based approach is used to identify potential similarities between the available facial feature vectors.
 
----
+Potential matches can then be reviewed to assist in determining whether the sighting may be related to an existing case.
 
-**Step 3 — A member of the public submits a sighting.**
+### 5. Case Monitoring
 
-Someone recognises the person and submits a photo through the public portal (no login required). The same face mesh is extracted and stored.
+The application dashboard provides an overview of registered cases and their current status.
 
-When an admin clicks **Match Cases**, the KNN model compares all sightings against all open cases. If a face is close enough, the case is automatically flipped to **Found** and the complainant is notified by email.
-
-<img src="./assets/screenshots/view_cases.png" alt="View cases — Found status with sighting location and submitter details" width="700"/>
-
----
-
-**Step 4 — The city map tells the bigger picture.**
-
-Admins can see which cities have the most unresolved cases and track resolution rates over time.
-
-<img src="./assets/screenshots/cases_by_city.png" alt="Cases by city — India map with city summary table" width="700"/>
-
----
-
-## How It Works
-
-1. **Officer registers a case** → uploads a photo → AI extracts a 468-point face mesh
-2. **Public submits a sighting** → uploads a photo or video → same extraction
-3. **Admin clicks Refresh** → KNN matches faces across both datasets → email sent to complainant on match
-
-No manual photo comparison. No paperwork pile-up.
+Location-related information can also be visualized to provide a better understanding of the geographical distribution of cases.
 
 ---
 
 ## Features
 
-| Feature | Details |
-|---|---|
-| Face detection | MediaPipe Face Landmarker — highlights detected faces, handles multiple people in frame |
-| AI matching | KNN on 1,404-dimensional face vectors; shows confidence % |
-| Video sightings | Upload a video — unique faces extracted automatically per frame |
-| Live map | Dashboard map showing case density by city across India |
-| Email alerts | Auto-notifies complainant email when a match is confirmed |
-| Role-based access | Admins can match, edit, delete; Officers can register and view |
-| Public portal | Separate mobile-friendly submission page, no login needed |
+| Feature                     | Description                                                           |
+| --------------------------- | --------------------------------------------------------------------- |
+| Missing Person Registration | Allows authorized users to create and maintain missing-person records |
+| Facial Landmark Detection   | Extracts facial landmark information from uploaded images             |
+| AI-Based Matching           | Uses machine learning to identify possible facial matches             |
+| Public Submission Portal    | Allows the public to submit possible sightings                        |
+| Image Processing            | Processes uploaded images for facial information                      |
+| Video Processing            | Extracts relevant frames and facial data from uploaded videos         |
+| Case Management             | Supports viewing, updating, and managing case records                 |
+| Role-Based Access           | Provides different permissions for different types of users           |
+| Case Status Tracking        | Helps monitor the progress and status of registered cases             |
+| Location Visualization      | Displays geographical information related to cases                    |
+| Database Storage            | Stores application data using SQLite                                  |
+| Email Notifications         | Supports notifications when configured in the application             |
 
 ---
 
-## Getting Started
+## Technology Stack
+
+The project is built using the following technologies:
+
+* **Python** – Core programming language
+* **Streamlit** – Web application interface
+* **MediaPipe** – Facial landmark detection and face processing
+* **scikit-learn** – Machine learning and KNN-based matching
+* **SQLite** – Local database storage
+* **SQLModel** – Database modelling and interaction
+* **OpenCV** – Image and video processing
+* **Folium** – Location and map visualization
+
+---
+
+## Installation
+
+### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/gaganmanku96/Finding-missing-person-using-AI.git
-cd Finding-missing-person-using-AI
+git clone <your-repository-url>
+```
+
+### 2. Navigate to the Project Directory
+
+```bash
+cd <your-project-folder>
+```
+
+### 3. Install the Required Dependencies
+
+```bash
 pip install -r requirements.txt
 ```
 
-Run the officer/admin portal:
+---
+
+## Running the Application
+
+### Run the Main Application
+
 ```bash
 streamlit run Home.py
 ```
 
-Run the public submission portal:
+### Run the Public Submission Portal
+
 ```bash
 streamlit run mobile_app.py
 ```
 
-The SQLite database and face landmarker model (~30 MB, auto-downloaded on first use) are created automatically.
-
-### Optional: Email notifications
-
-Set these environment variables to enable email alerts on match:
-```
-SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD
-```
-The complainant's email entered during case registration is used as the recipient.
+> Make sure the required files and dependencies are properly configured before running the application.
 
 ---
 
-## Configuring Login Credentials
+## Face Matching Process
 
-Credentials are stored in `login_config.yml`. To add or change a user:
+The facial comparison process generally follows these steps:
 
-**1. Generate a bcrypt password hash:**
-```python
-import bcrypt
-print(bcrypt.hashpw(b"your_password", bcrypt.gensalt()).decode())
-```
+1. An image is uploaded to the application.
+2. The system checks whether a face is detected.
+3. Facial landmarks are extracted from the detected face.
+4. The landmark data is converted into a numerical feature representation.
+5. The extracted information is stored or compared with existing records.
+6. The KNN-based algorithm identifies the closest available matches.
+7. Potential matches are made available for review.
 
-**2. Edit `login_config.yml`:**
-```yaml
-credentials:
-  usernames:
-    your_username:               # used as the login username
-      name: Your Display Name
-      email: you@example.com
-      city: Delhi
-      area: Sector 1
-      role: Admin                # Admin or Officer
-      password: '$2b$12$...'     # paste the hash from step 1
-```
+The quality of the matching process can be influenced by:
 
-**Roles:**
-| Role | Permissions |
-|---|---|
-| Admin | Register cases, view all cases, trigger matching, edit/delete cases |
-| Officer | Register cases, view own cases |
-
-> `login_config.yml` is git-ignored by default. Never commit real credentials.
+* Image quality
+* Lighting conditions
+* Face orientation
+* Visibility of facial features
+* Resolution of the uploaded image
 
 ---
 
-## Seeding Demo Data
+## User Roles
 
-The `scripts/` folder contains two utilities for populating the database with demo data.
+The application supports role-based access for authorized users.
 
-### Step 1 — Download sample images
+| Role            | General Access                                                  |
+| --------------- | --------------------------------------------------------------- |
+| Administrator   | Can access broader system functions and manage cases            |
+| Authorized User | Can register and access cases according to assigned permissions |
 
-```bash
-# Download ~2 images per celebrity into scripts/bulk_data/reported/
-uv run scripts/download_celebrity_images.py --dest reported
-
-# Or split across both folders (reported + publicly_seen)
-uv run scripts/download_celebrity_images.py --dest both
-```
-
-This uses DuckDuckGo image search — no API key needed.
-
-You can also drop your own images directly into:
-```
-scripts/bulk_data/reported/        ← missing person cases
-scripts/bulk_data/publicly_seen/   ← public sighting submissions
-```
-
-### Step 2 — Run the bulk upload
-
-```bash
-python scripts/bulk_upload.py
-```
-
-This processes every image in both folders:
-- Extracts a face mesh using MediaPipe (images with no detectable face are skipped)
-- Generates realistic metadata (names, cities, Aadhaar numbers, last-seen locations)
-- Inserts records into the SQLite database
-- Copies images to `resources/` so the app can display them
-
-By default `submitted_by` is set to `gagan` (the username in the default `login_config.yml`). If you've changed your username, pass it explicitly:
-
-```bash
-python scripts/bulk_upload.py --officer your_username
-```
-
-To reset and re-seed from scratch:
-```bash
-sqlite3 sqlite_database.db "DELETE FROM registeredcases; DELETE FROM publicsubmissions;"
-python scripts/bulk_upload.py
-```
+> For security, passwords should be stored securely and should not be uploaded directly to a public repository.
 
 ---
 
-## Tech Stack
+## Database
 
-- **Streamlit** — UI for both portals
-- **MediaPipe Tasks** — face mesh landmark extraction (468 points × 3D)
-- **scikit-learn KNN** — face matching
-- **SQLModel + SQLite** — data storage
-- **Folium** — interactive map
-- **OpenCV** — video frame extraction
+The project uses **SQLite** for storing application-related data.
+
+The database may contain information such as:
+
+* Missing-person case details
+* Case status
+* Facial feature information
+* Public sighting submissions
+* Location-related details
+* Application user information
+
+The database helps organize and manage records required for the registration and matching process.
 
 ---
 
-## FAQ
+## Email Configuration
 
-**Q: Can I run this without an internet connection?**
-The face landmarker model (~30 MB) is downloaded once on first run and cached locally. After that, both portals work fully offline.
+If email notifications are enabled, mail server credentials can be configured using environment variables.
 
-**Q: How accurate is the face matching?**
-Accuracy depends heavily on photo quality. Front-facing, well-lit photos work best. The confidence score shown on each match reflects KNN distance — higher is a stronger match.
+Example configuration:
 
-**Q: Can I add multiple officers?**
-Yes. Add as many usernames as needed to `login_config.yml`. Each officer sees only their own registered cases; Admins see all cases.
-
-**Q: The map doesn't show a city I entered.**
-The map uses a built-in city → coordinates lookup. If a city is missing, open an issue or add it to the `CITY_COORDS` dict in `Home.py`.
-
-**Q: Where is the data stored?**
-Everything is in `sqlite_database.db` (git-ignored) in the project root. Images are stored as JPGs in `resources/` (also git-ignored). Nothing is sent to any external server.
-
-**Q: How do I reset the database?**
-```bash
-sqlite3 sqlite_database.db "DELETE FROM registeredcases; DELETE FROM publicsubmissions;"
+```text
+SMTP_HOST
+SMTP_PORT
+SMTP_USER
+SMTP_PASSWORD
 ```
-Or simply delete `sqlite_database.db` — it will be recreated on next run.
 
-**Q: Can the public portal be hosted separately from the officer portal?**
-Yes. They are independent Streamlit apps (`Home.py` and `mobile_app.py`) and share only the SQLite database. Point both to the same database file path and they will work together.
+> Sensitive credentials should not be hard-coded or uploaded to a public repository.
 
 ---
 
-*Thanks to the [MediaPipe](https://mediapipe.dev/) team for the open-source face landmarker model.*
+## Project Structure
+
+```text
+project-folder/
+│
+├── Home.py
+├── mobile_app.py
+├── requirements.txt
+│
+├── scripts/
+│   └── Helper scripts and utilities
+│
+├── resources/
+│   └── Application resources and stored files
+│
+├── assets/
+│   └── Application assets and screenshots
+│
+└── Configuration and database files
+```
+
+The exact project structure may vary depending on the configuration and version of the application.
+
+---
+
+## Limitations
+
+The system may be affected by several factors, including:
+
+* Low-quality images
+* Poor lighting conditions
+* Partially visible faces
+* Side-facing faces
+* Changes in appearance
+* Similar-looking individuals
+* Limited comparison data
+
+For this reason, the system should be considered a tool for identifying **potential matches** and should not be used as the sole basis for final identification.
+
+---
+
+## Future Enhancements
+
+Possible future improvements include:
+
+* Improving facial matching accuracy
+* Adding more advanced deep-learning models
+* Supporting larger and more scalable databases
+* Adding advanced search and filtering functionality
+* Implementing secure cloud-based storage
+* Adding real-time notifications
+* Improving geographical analysis and reporting
+* Enhancing authentication and application security
+* Improving video-based face detection
+* Developing a dedicated mobile application
+
+---
+
+## Disclaimer
+
+This project is developed for educational and learning purposes. Any images or data used for testing and demonstration should be handled responsibly and in accordance with applicable privacy and data-protection requirements.
+
+The application is intended to assist in identifying potential matches and should not replace appropriate human verification or official identification procedures.
